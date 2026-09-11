@@ -1,1 +1,3 @@
 # Photogallery
+
+Bill Smith
