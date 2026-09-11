@@ -1,3 +1,3 @@
 # Photogallery
 
-Bill Smith
+Michael Villalobos
