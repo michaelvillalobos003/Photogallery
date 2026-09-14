@@ -46,21 +46,21 @@ const photos: Photo[] = [
   },
   {
     id: 7,
-    title: 'Winding Trail',
-    category: 'Adventure',
-    imageUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop&q=80',
+    title: 'Tacos',
+    category: 'Mexican Food',
+    imageUrl: '/images/tacos.jpg',
   },
   {
     id: 8,
-    title: 'Mirror Lake',
-    category: 'Waterscape',
-    imageUrl: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=600&fit=crop&q=80',
+    title: 'Huevos con Chorizo',
+    category: 'Mexican Food',
+    imageUrl: '/images/huevos_con_chorizo.jpg',
   },
   {
     id: 9,
-    title: 'Autumn Canopy',
-    category: 'Botanical',
-    imageUrl: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop&q=80',
+    title: 'Elote',
+    category: 'Mexican Food',
+    imageUrl: '/images/elote.jpg',
   },
 ];
 
