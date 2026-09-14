@@ -1,0 +1,8 @@
+{
+  "name": "Photogallery",
+  "description": "A 9-photo gallery grid with placeholder images and titles",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

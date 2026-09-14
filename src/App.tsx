@@ -10,9 +10,9 @@ interface Photo {
 const photos: Photo[] = [
   {
     id: 1,
-    title: 'Alpine Sunrise',
-    category: 'Landscape',
-    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop&q=80',
+    title: 'Spider-Man',
+    category: 'Marvel',
+    imageUrl: '/images/spiderman.jpg',
   },
   {
     id: 2,
