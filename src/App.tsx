@@ -16,8 +16,8 @@ const photos: Photo[] = [
   },
   {
     id: 2,
-    title: 'Architectural Curves',
-    category: 'Architecture',
+    title: 'Gilmerto Mora',
+    category: 'Gilmerto Mora',
     imageUrl: '/images/architecture.jpg',
   },
   {
