@@ -18,7 +18,7 @@ const photos: Photo[] = [
     id: 2,
     title: 'Gilmerto Mora',
     category: 'Gilmerto Mora',
-    imageUrl: '/images/architecture.jpg',
+    imageUrl: '/images/gilmertomora.jpg',
   },
   {
     id: 3,
