@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photogallery</title>
+    <meta name="description" content="A 9-photo gallery grid with placeholder images and titles" />
+    <meta property="og:title" content="Photogallery" />
+    <meta property="og:description" content="A 9-photo gallery grid with placeholder images and titles" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f5f5f4;
+        color: #1c1917;
+        line-height: 1.5;
+      }
+      .gallery-container {
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 2.5rem 1rem;
+      }
+      .gallery-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+      .gallery-title {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        color: #1c1917;
+      }
+      .gallery-desc {
+        color: #57534e;
+        margin: 0;
+        font-size: 1rem;
+      }
+      .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
+      @media (max-width: 640px) {
+        .photo-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+      }
+      .photo-card {
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        border: 1px solid #e7e5e4;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .photo-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      .photo-wrapper {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        background-color: #e7e5e4;
+      }
+      .photo-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+      }
+      .photo-card:hover .photo-img {
+        transform: scale(1.04);
+      }
+      .photo-caption {
+        padding: 1rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .photo-category {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #57534e;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+      .photo-heading {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #292524;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
+  </head>
+  <body class="bg-neutral-50 text-neutral-900 antialiased min-h-screen">
+    <div id="root">
+      <div id="gallery-app" class="gallery-container">
+        <header id="gallery-header" class="gallery-header">
+          <h1 id="gallery-main-title" class="gallery-title">Photo Gallery</h1>
+          <p id="gallery-subtitle" class="gallery-desc">A 3&times;3 photo grid featuring equal dimensions</p>
+        </header>
+
+        <main id="photo-grid" class="photo-grid">
+          <!-- Row 1, Column 1 -->
+          <article id="photo-card-1" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-1"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&h=600&fit=crop&q=80"
+                alt="Alpine Sunrise"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Landscape</span>
+              <h2 id="photo-title-1" class="photo-heading">Alpine Sunrise</h2>
+            </div>
+          </article>
+
+          <!-- Row 1, Column 2 -->
+          <article id="photo-card-2" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-2"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=600&h=600&fit=crop&q=80"
+                alt="Architectural Curves"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Architecture</span>
+              <h2 id="photo-title-2" class="photo-heading">Architectural Curves</h2>
+            </div>
+          </article>
+
+          <!-- Row 1, Column 3 -->
+          <article id="photo-card-3" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-3"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=600&fit=crop&q=80"
+                alt="Emerald Forest"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Nature</span>
+              <h2 id="photo-title-3" class="photo-heading">Emerald Forest</h2>
+            </div>
+          </article>
+
+          <!-- Row 2, Column 1 -->
+          <article id="photo-card-4" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-4"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=600&fit=crop&q=80"
+                alt="Coastal Serenity"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Seascape</span>
+              <h2 id="photo-title-4" class="photo-heading">Coastal Serenity</h2>
+            </div>
+          </article>
+
+          <!-- Row 2, Column 2 -->
+          <article id="photo-card-5" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-5"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=600&fit=crop&q=80"
+                alt="Metropolitan Motion"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Urban</span>
+              <h2 id="photo-title-5" class="photo-heading">Metropolitan Motion</h2>
+            </div>
+          </article>
+
+          <!-- Row 2, Column 3 -->
+          <article id="photo-card-6" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-6"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&h=600&fit=crop&q=80"
+                alt="Golden Dunes"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Desert</span>
+              <h2 id="photo-title-6" class="photo-heading">Golden Dunes</h2>
+            </div>
+          </article>
+
+          <!-- Row 3, Column 1 -->
+          <article id="photo-card-7" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-7"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=600&fit=crop&q=80"
+                alt="Winding Trail"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Adventure</span>
+              <h2 id="photo-title-7" class="photo-heading">Winding Trail</h2>
+            </div>
+          </article>
+
+          <!-- Row 3, Column 2 -->
+          <article id="photo-card-8" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-8"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&h=600&fit=crop&q=80"
+                alt="Mirror Lake"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Waterscape</span>
+              <h2 id="photo-title-8" class="photo-heading">Mirror Lake</h2>
+            </div>
+          </article>
+
+          <!-- Row 3, Column 3 -->
+          <article id="photo-card-9" class="photo-card">
+            <div class="photo-wrapper">
+              <img
+                id="photo-img-9"
+                class="photo-img"
+                src="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=600&h=600&fit=crop&q=80"
+                alt="Autumn Canopy"
+                loading="lazy"
+              />
+            </div>
+            <div class="photo-caption">
+              <span class="photo-category">Botanical</span>
+              <h2 id="photo-title-9" class="photo-heading">Autumn Canopy</h2>
+            </div>
+          </article>
+        </main>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
