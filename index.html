@@ -16,14 +16,28 @@
         margin: 0;
         padding: 0;
         font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background-color: #f5f5f4;
-        color: #1c1917;
+        background-color: #09090b;
+        color: #f4f4f5;
         line-height: 1.5;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
       }
+      .bg-canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
       .gallery-container {
         max-width: 64rem;
         margin: 0 auto;
         padding: 2.5rem 1rem;
+        position: relative;
+        z-index: 10;
       }
       .gallery-header {
         text-align: center;
@@ -33,12 +47,15 @@
         font-size: 2.25rem;
         font-weight: 700;
         margin: 0 0 0.5rem 0;
-        color: #1c1917;
+        color: #ffffff;
+        letter-spacing: -0.02em;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
       }
       .gallery-desc {
-        color: #57534e;
+        color: #a1a1aa;
         margin: 0;
-        font-size: 1rem;
+        font-size: 1.05rem;
+        font-weight: 500;
       }
       .photo-grid {
         display: grid;
@@ -53,33 +70,35 @@
         }
       }
       .photo-card {
-        background-color: #ffffff;
-        border-radius: 0.75rem;
-        border: 1px solid #e7e5e4;
+        background-color: #141418;
+        border-radius: 0.875rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
       }
       .photo-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transform: translateY(-5px);
+        border-color: rgba(255, 255, 255, 0.28);
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 255, 255, 0.06);
       }
       .photo-wrapper {
         width: 100%;
         aspect-ratio: 1 / 1;
         overflow: hidden;
-        background-color: #e7e5e4;
+        background-color: #1e1e24;
       }
       .photo-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 0.3s ease;
+        transition: transform 0.35s ease;
       }
       .photo-card:hover .photo-img {
-        transform: scale(1.04);
+        transform: scale(1.05);
       }
       .photo-caption {
         padding: 1rem;
@@ -87,32 +106,36 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        background: #141418;
       }
       .photo-category {
         font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: #57534e;
+        letter-spacing: 0.06em;
+        color: #a1a1aa;
         font-weight: 600;
         margin-bottom: 0.25rem;
       }
       .photo-heading {
         margin: 0;
-        font-size: 1rem;
+        font-size: 1.05rem;
         font-weight: 600;
-        color: #292524;
+        color: #fafafa;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     </style>
   </head>
-  <body class="bg-neutral-50 text-neutral-900 antialiased min-h-screen">
+  <body class="antialiased min-h-screen">
+    <!-- Interactive Floating Particle Canvas on Black Background -->
+    <canvas id="bg-canvas" class="bg-canvas" aria-hidden="true"></canvas>
+
     <div id="root">
       <div id="gallery-app" class="gallery-container">
         <header id="gallery-header" class="gallery-header">
           <h1 id="gallery-main-title" class="gallery-title">Photo Gallery</h1>
-          <p id="gallery-subtitle" class="gallery-desc">A 3&times;3 photo grid featuring equal dimensions</p>
+          <p id="gallery-subtitle" class="gallery-desc">Michael's Photos</p>
         </header>
 
         <main id="photo-grid" class="photo-grid">
@@ -158,15 +181,15 @@
               <img
                 id="photo-img-3"
                 class="photo-img"
-                src="images/forest.jpg"
-                alt="Emerald Forest"
+                src="images/woody.jpg"
+                alt="Woody"
                 loading="lazy"
-                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/forest.jpg';}"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/woody.jpg';}"
               />
             </div>
             <div class="photo-caption">
-              <span class="photo-category">Nature</span>
-              <h2 id="photo-title-3" class="photo-heading">Emerald Forest</h2>
+              <span class="photo-category">Toy Story</span>
+              <h2 id="photo-title-3" class="photo-heading">Woody</h2>
             </div>
           </article>
 
@@ -176,15 +199,15 @@
               <img
                 id="photo-img-4"
                 class="photo-img"
-                src="images/seascape.jpg"
-                alt="Coastal Serenity"
+                src="images/new_york.jpg"
+                alt="New York"
                 loading="lazy"
-                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/seascape.jpg';}"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/new_york.jpg';}"
               />
             </div>
             <div class="photo-caption">
-              <span class="photo-category">Seascape</span>
-              <h2 id="photo-title-4" class="photo-heading">Coastal Serenity</h2>
+              <span class="photo-category">Travel</span>
+              <h2 id="photo-title-4" class="photo-heading">New York</h2>
             </div>
           </article>
 
@@ -194,15 +217,15 @@
               <img
                 id="photo-img-5"
                 class="photo-img"
-                src="images/city.jpg"
-                alt="Metropolitan Motion"
+                src="images/washington.jpg"
+                alt="Washington"
                 loading="lazy"
-                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/city.jpg';}"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/washington.jpg';}"
               />
             </div>
             <div class="photo-caption">
-              <span class="photo-category">Urban</span>
-              <h2 id="photo-title-5" class="photo-heading">Metropolitan Motion</h2>
+              <span class="photo-category">Travel</span>
+              <h2 id="photo-title-5" class="photo-heading">Washington</h2>
             </div>
           </article>
 
@@ -212,15 +235,15 @@
               <img
                 id="photo-img-6"
                 class="photo-img"
-                src="images/desert.jpg"
-                alt="Golden Dunes"
+                src="images/mexico.jpg"
+                alt="Mexico"
                 loading="lazy"
-                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/desert.jpg';}"
+                onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='/images/mexico.jpg';}"
               />
             </div>
             <div class="photo-caption">
-              <span class="photo-category">Desert</span>
-              <h2 id="photo-title-6" class="photo-heading">Golden Dunes</h2>
+              <span class="photo-category">Travel</span>
+              <h2 id="photo-title-6" class="photo-heading">Mexico</h2>
             </div>
           </article>
 
@@ -280,5 +303,152 @@
         </main>
       </div>
     </div>
+
+    <script>
+      (function() {
+        const canvas = document.getElementById('bg-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let width = 0;
+        let height = 0;
+        let particles = [];
+        const mouse = { x: -1000, y: -1000, radius: 140 };
+
+        function resize() {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+          initParticles();
+        }
+
+        const palette = [
+          'rgba(255, 49, 88, ',    // Vivid Electric Crimson/Pink
+          'rgba(255, 110, 20, ',   // Radiant Neon Orange
+          'rgba(255, 225, 0, ',    // Bright Cyber Yellow
+          'rgba(16, 235, 120, ',   // Vivid Neon Green
+          'rgba(0, 240, 255, ',    // Electric Cyan
+          'rgba(60, 130, 255, ',   // Neon Electric Blue
+          'rgba(175, 70, 255, ',   // Vivid Electric Violet
+          'rgba(255, 30, 190, '    // Glowing Hot Magenta
+        ];
+
+        function initParticles() {
+          particles = [];
+          const count = Math.min(Math.max(Math.floor((width * height) / 24000), 32), 65);
+          for (let i = 0; i < count; i++) {
+            const isLarge = Math.random() > 0.72;
+            const baseRad = isLarge ? Math.random() * 8 + 10 : Math.random() * 5 + 5.5;
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              radius: baseRad,
+              baseRadius: baseRad,
+              color: palette[Math.floor(Math.random() * palette.length)],
+              alpha: Math.random() * 0.25 + 0.6,
+              vx: (Math.random() - 0.5) * 2.5,
+              vy: (Math.random() - 0.5) * 2.5,
+              pulse: Math.random() * Math.PI * 2,
+              pulseSpeed: Math.random() * 0.035 + 0.02
+            });
+          }
+        }
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('mousemove', (e) => {
+          mouse.x = e.clientX;
+          mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseleave', () => {
+          mouse.x = -1000;
+          mouse.y = -1000;
+        });
+        window.addEventListener('touchmove', (e) => {
+          if (e.touches && e.touches[0]) {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+          }
+        }, { passive: true });
+        window.addEventListener('touchend', () => {
+          mouse.x = -1000;
+          mouse.y = -1000;
+        });
+
+        resize();
+
+        function render() {
+          ctx.clearRect(0, 0, width, height);
+
+          // Update and draw particles
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            // Move with velocity plus organic wavy drift
+            p.x += p.vx + Math.sin(p.pulse) * 0.95;
+            p.y += p.vy + Math.cos(p.pulse) * 0.95;
+            p.pulse += p.pulseSpeed;
+
+            // Wrap boundaries smoothly
+            if (p.x < -30) p.x = width + 30;
+            else if (p.x > width + 30) p.x = -30;
+            if (p.y < -30) p.y = height + 30;
+            else if (p.y > height + 30) p.y = -30;
+
+            // Interactive mouse repulsion
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < mouse.radius && dist > 0) {
+              const force = (mouse.radius - dist) / mouse.radius;
+              p.x -= (dx / dist) * force * 5.5;
+              p.y -= (dy / dist) * force * 5.5;
+            }
+
+            const currentRadius = Math.max(2, p.baseRadius + Math.sin(p.pulse) * 1.8);
+            const currentAlpha = Math.max(0.35, Math.min(0.95, p.alpha + Math.sin(p.pulse) * 0.18));
+
+            // Radiant neon glow effect
+            ctx.shadowColor = p.color + '0.9)';
+            ctx.shadowBlur = 14;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color + currentAlpha + ')';
+            ctx.fill();
+
+            // Bright crisp rim
+            ctx.lineWidth = 1.6;
+            ctx.strokeStyle = p.color + '0.95)';
+            ctx.stroke();
+
+            // Soft luminous specular core
+            ctx.beginPath();
+            ctx.arc(p.x - currentRadius * 0.26, p.y - currentRadius * 0.26, Math.max(1, currentRadius * 0.32), 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, ' + (currentAlpha * 0.7) + ')';
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+
+            // Connect nearby rainbow particles with subtle glowing filaments
+            for (let j = i + 1; j < particles.length; j++) {
+              const p2 = particles[j];
+              const dist2 = Math.hypot(p.x - p2.x, p.y - p2.y);
+              if (dist2 < 145) {
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p2.x, p2.y);
+                const lineAlpha = (1 - dist2 / 145) * 0.32;
+                ctx.strokeStyle = p.color + lineAlpha + ')';
+                ctx.lineWidth = 1.1;
+                ctx.stroke();
+              }
+            }
+          }
+
+          requestAnimationFrame(render);
+        }
+
+        requestAnimationFrame(render);
+      })();
+    </script>
   </body>
 </html>
