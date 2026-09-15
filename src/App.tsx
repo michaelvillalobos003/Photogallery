@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { ParticleTitle } from './components/ParticleTitle';
 
 interface Photo {
   id: number;
@@ -227,11 +228,9 @@ export default function App(): React.JSX.Element {
 
       {/* Main Content Container */}
       <div className="relative z-10 max-w-5xl mx-auto">
-        <header id="gallery-header" className="text-center mb-10">
-          <h1 id="gallery-main-title" className="text-3xl sm:text-4xl font-bold tracking-tight text-white drop-shadow-md">
-            Photo Gallery
-          </h1>
-          <p id="gallery-subtitle" className="mt-2 text-base sm:text-lg text-neutral-400 font-medium">
+        <header id="gallery-header" className="text-center mb-8 flex flex-col items-center">
+          <ParticleTitle />
+          <p id="gallery-subtitle" className="mt-1 text-base sm:text-lg text-neutral-400 font-medium tracking-wide">
             Michael's Photos
           </p>
         </header>
