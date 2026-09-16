@@ -2,11 +2,11 @@
 
 ## Run in Replit
 
-The gallery is a standalone static page. The `Start application` workflow serves
-the project root on port 5000:
+The gallery is a Vite/React app. The `Start application` workflow runs the
+development server on port 5000:
 
 ```bash
-python3 -m http.server 5000 --bind 0.0.0.0
+bun run dev -- --host 0.0.0.0 --port 5000
 ```
 
-Open the Replit Preview to view `index.html`.
+Open the Replit Preview to view the synced React app.
