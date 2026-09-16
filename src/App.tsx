@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ParticleTitle } from './components/ParticleTitle';
 import ShaderDemo_ATC from '@/components/ui/atc-shader';
+import { VerticalCutReveal } from '@/components/ui/vertical-cut-reveal';
 
 interface Photo {
   id: number;
@@ -330,26 +331,49 @@ export default function App(): React.JSX.Element {
                 </button>
               </div>
 
-              {/* Rich Photo Description & Story */}
+              {/* Rich Photo Description with Vertical Cut Reveal Animation */}
               <div className="p-5 sm:p-6 bg-[#16161b] flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-2">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white">
-                      {activePhoto.title}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-3">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                      <VerticalCutReveal
+                        key={`title-${activePhoto.id}`}
+                        splitBy="words"
+                        staggerDuration={0.035}
+                        staggerFrom="first"
+                        transition={{
+                          type: "spring",
+                          stiffness: 220,
+                          damping: 22,
+                          delay: 0.05,
+                        }}
+                        containerClassName="font-bold text-white inline"
+                      >
+                        {activePhoto.title}
+                      </VerticalCutReveal>
                     </h3>
-                    <span className="text-xs text-neutral-400 font-medium tracking-wide">
-                      {activePhoto.highlights}
+                    <span className="text-xs text-neutral-400 font-medium">
+                      {activePhoto.category}
                     </span>
                   </div>
 
-                  {/* Complete Description Text */}
-                  <div className="mt-3 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-                    <h4 className="text-xs uppercase tracking-widest text-neutral-400 font-bold mb-1.5">
-                      About This Photo
-                    </h4>
-                    <p className="text-sm sm:text-base text-neutral-200 leading-relaxed">
+                  {/* Complete Description Text with Smooth Vertical Cut Reveal Animation */}
+                  <div className="mt-2 text-sm sm:text-base text-neutral-200 leading-relaxed">
+                    <VerticalCutReveal
+                      key={`desc-${activePhoto.id}`}
+                      splitBy="words"
+                      staggerDuration={0.014}
+                      staggerFrom="first"
+                      transition={{
+                        type: "spring",
+                        stiffness: 220,
+                        damping: 24,
+                        delay: 0.12,
+                      }}
+                      containerClassName="text-neutral-200 leading-relaxed block"
+                    >
                       {activePhoto.description}
-                    </p>
+                    </VerticalCutReveal>
                   </div>
                 </div>
 
