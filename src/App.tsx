@@ -1,254 +1,214 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ParticleTitle } from './components/ParticleTitle';
+import ShaderDemo_ATC from '@/components/ui/atc-shader';
 
 interface Photo {
   id: number;
   title: string;
-  imageUrl: string;
   category: string;
+  imageUrl: string;
+  description: string;
+  highlights: string;
 }
 
 const photos: Photo[] = [
   {
     id: 1,
     title: 'Spider-Man',
-    category: 'Marvel',
+    category: 'Marvel Universe',
     imageUrl: '/images/spiderman.jpg',
+    description:
+      'Peter Parker leaps between Manhattan’s soaring skyscrapers in his iconic red and blue suit. Armed with superhuman spider-agility, wall-crawling instincts, and homemade web-shooters, he balances the complex pressures of ordinary youth with his sacred oath that with great power comes great responsibility.',
+    highlights: 'Hero • Web-Slinger • Queens, NYC',
   },
   {
     id: 2,
-    title: 'Gilmerto Mora',
-    category: 'Gilmerto Mora',
-    imageUrl: 'images/gilmertomora.jpg',
+    title: 'Gilberto Mora',
+    category: 'Soccer Phenom',
+    imageUrl: '/images/gilmertomora.jpg',
+    description:
+      'Widely celebrated as one of the most exciting young talents in modern soccer, Gilberto Mora electrifies stadiums with blinding footwork, deceptive pace, and clinical playmaking intelligence. A rising international midfielder with world-class potential.',
+    highlights: 'Midfielder • Club Tijuana / Mexico • Prodigy',
   },
   {
     id: 3,
-    title: 'Woody',
-    category: 'Toy Story',
-    imageUrl: 'images/woody.jpg',
+    title: 'Sheriff Woody',
+    category: 'Disney / Pixar',
+    imageUrl: '/images/woody.jpg',
+    description:
+      'The courageous, kind-hearted vintage pull-string cowboy sheriff from Pixar’s Toy Story. As the natural leader of Andy’s room, Woody’s steadfast loyalty to Buzz Lightyear and his fellow toys demonstrates that true friendship endures across every frontier.',
+    highlights: 'Classic Animation • Andy’s Room • Cowboy Sheriff',
   },
   {
     id: 4,
-    title: 'New York',
-    category: 'Travel',
-    imageUrl: 'images/new_york.jpg',
+    title: 'New York City',
+    category: 'Travel & Urban',
+    imageUrl: '/images/new_york.jpg',
+    description:
+      'The iconic Empire City stands as a global crossroads of commerce, art, and urban culture. From the neon towers of Midtown Manhattan and yellow taxicabs to the peaceful winding paths of Central Park, New York radiates an unforgettable, unstoppable pulse.',
+    highlights: 'Manhattan • Empire State • Urban Metropolis',
   },
   {
     id: 5,
-    title: 'Washington',
-    category: 'Travel',
-    imageUrl: 'images/washington.jpg',
+    title: 'Washington, D.C.',
+    category: 'Travel & History',
+    imageUrl: '/images/washington.jpg',
+    description:
+      'The stately capital of the United States, defined by magnificent neoclassical marble monuments, world-class Smithsonian galleries, and the reflective waters of the National Mall. A historic center of governance and sweeping national heritage.',
+    highlights: 'National Mall • Capitol Hill • Cherry Blossoms',
   },
   {
     id: 6,
     title: 'Mexico',
-    category: 'Travel',
-    imageUrl: 'images/mexico.jpg',
+    category: 'Travel & Culture',
+    imageUrl: '/images/mexico.jpg',
+    description:
+      'A land of extraordinary contrasts where thousands of years of ancient Mayan and Aztec civilizations meet vibrant colonial plazas, sun-kissed coastal waters, festive mariachi music, and world-renowned culinary warmth.',
+    highlights: 'Latin America • Ancient Pyramids • Coastal Beauty',
   },
   {
     id: 7,
-    title: 'Tacos',
-    category: 'Mexican Food',
+    title: 'Street Tacos',
+    category: 'Mexican Gastronomy',
     imageUrl: '/images/tacos.jpg',
+    description:
+      'The quintessential cornerstone of Mexican street food: freshly pressed, hot corn tortillas loaded with tender, seasoned grilled meat, crisp finely diced white onions, fragrant cilantro, and a bright squeeze of tart lime alongside spicy homemade salsa.',
+    highlights: 'Street Food • Taquería Classic • Fresh Salsas',
   },
   {
     id: 8,
     title: 'Huevos con Chorizo',
-    category: 'Mexican Food',
-    imageUrl: 'images/huevos_con_chorizo.jpg',
+    category: 'Mexican Gastronomy',
+    imageUrl: '/images/huevos_con_chorizo.jpg',
+    description:
+      'A hearty and beloved traditional breakfast enjoyed across Mexico. Farm-fresh eggs are scrambled directly with deeply spiced pork chorizo infused with chiles, cumin, and garlic, served sizzling hot with warm refried beans and corn tortillas.',
+    highlights: 'Traditional Breakfast • Spiced Chorizo • Comfort Food',
   },
   {
     id: 9,
-    title: 'Elote',
-    category: 'Mexican Food',
+    title: 'Elote Callejero',
+    category: 'Mexican Gastronomy',
     imageUrl: '/images/elote.jpg',
+    description:
+      'Sweet Mexican street corn grilled on an open flame until lightly charred, slathered with silky Mexican crema or mayonnaise, heavily dusted with salty crumbled cotija cheese, and sprinkled with tangy chile-lime seasoning.',
+    highlights: 'Antojito • Grilled Sweetcorn • Cotija & Chile',
   },
 ];
 
 export default function App(): React.JSX.Element {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+  const [shaderEnabled, setShaderEnabled] = useState<boolean>(true);
+  const [shaderIntensity, setShaderIntensity] = useState<'subtle' | 'vivid'>('subtle');
 
+  // Keyboard navigation for lightbox
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedPhotoIndex === null) return;
 
-    let animId: number;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-    const mouse = { x: -1000, y: -1000, radius: 140 };
-
-    const palette = [
-      'rgba(255, 49, 88, ',    // Vivid Electric Crimson/Pink
-      'rgba(255, 110, 20, ',   // Radiant Neon Orange
-      'rgba(255, 225, 0, ',    // Bright Cyber Yellow
-      'rgba(16, 235, 120, ',   // Vivid Neon Green
-      'rgba(0, 240, 255, ',    // Electric Cyan
-      'rgba(60, 130, 255, ',   // Neon Electric Blue
-      'rgba(175, 70, 255, ',   // Vivid Electric Violet
-      'rgba(255, 30, 190, '    // Glowing Hot Magenta
-    ];
-
-    let particles: Array<{
-      x: number;
-      y: number;
-      radius: number;
-      baseRadius: number;
-      color: string;
-      alpha: number;
-      vx: number;
-      vy: number;
-      pulse: number;
-      pulseSpeed: number;
-    }> = [];
-
-    const initParticles = () => {
-      particles = [];
-      const count = Math.min(Math.max(Math.floor((width * height) / 24000), 32), 65);
-      for (let i = 0; i < count; i++) {
-        const isLarge = Math.random() > 0.72;
-        const baseRad = isLarge ? Math.random() * 8 + 10 : Math.random() * 5 + 5.5;
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: baseRad,
-          baseRadius: baseRad,
-          color: palette[Math.floor(Math.random() * palette.length)],
-          alpha: Math.random() * 0.25 + 0.6,
-          vx: (Math.random() - 0.5) * 2.5,
-          vy: (Math.random() - 0.5) * 2.5,
-          pulse: Math.random() * Math.PI * 2,
-          pulseSpeed: Math.random() * 0.035 + 0.02
-        });
+      if (e.key === 'Escape') {
+        setSelectedPhotoIndex(null);
+      } else if (e.key === 'ArrowRight') {
+        setSelectedPhotoIndex((prev) => (prev !== null ? (prev + 1) % photos.length : null));
+      } else if (e.key === 'ArrowLeft') {
+        setSelectedPhotoIndex((prev) => (prev !== null ? (prev - 1 + photos.length) % photos.length : null));
       }
     };
 
-    const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      initParticles();
-    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedPhotoIndex]);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    };
-
-    const handleMouseLeave = () => {
-      mouse.x = -1000;
-      mouse.y = -1000;
-    };
-
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseleave', handleMouseLeave);
-    initParticles();
-
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.x += p.vx + Math.sin(p.pulse) * 0.95;
-        p.y += p.vy + Math.cos(p.pulse) * 0.95;
-        p.pulse += p.pulseSpeed;
-
-        if (p.x < -30) p.x = width + 30;
-        else if (p.x > width + 30) p.x = -30;
-        if (p.y < -30) p.y = height + 30;
-        else if (p.y > height + 30) p.y = -30;
-
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < mouse.radius && dist > 0) {
-          const force = (mouse.radius - dist) / mouse.radius;
-          p.x -= (dx / dist) * force * 5.5;
-          p.y -= (dy / dist) * force * 5.5;
-        }
-
-        const currentRadius = Math.max(2, p.baseRadius + Math.sin(p.pulse) * 1.8);
-        const currentAlpha = Math.max(0.35, Math.min(0.95, p.alpha + Math.sin(p.pulse) * 0.18));
-
-        // Radiant neon glow effect on black
-        ctx.shadowColor = p.color + '0.9)';
-        ctx.shadowBlur = 14;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color + currentAlpha + ')';
-        ctx.fill();
-
-        // Bright rim
-        ctx.lineWidth = 1.6;
-        ctx.strokeStyle = p.color + '0.95)';
-        ctx.stroke();
-
-        // Luminous specular highlight
-        ctx.beginPath();
-        ctx.arc(p.x - currentRadius * 0.26, p.y - currentRadius * 0.26, Math.max(1, currentRadius * 0.32), 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 255, 255, ' + (currentAlpha * 0.7) + ')';
-        ctx.fill();
-
-        ctx.shadowBlur = 0;
-
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dist2 = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist2 < 145) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            const lineAlpha = (1 - dist2 / 145) * 0.32;
-            ctx.strokeStyle = p.color + lineAlpha + ')';
-            ctx.lineWidth = 1.1;
-            ctx.stroke();
-          }
-        }
-      }
-
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseleave', handleMouseLeave);
-      cancelAnimationFrame(animId);
-    };
-  }, []);
+  const activePhoto = selectedPhotoIndex !== null ? photos[selectedPhotoIndex] : null;
 
   return (
-    <div id="gallery-app" className="relative min-h-screen bg-[#09090b] text-neutral-100 py-10 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Interactive Floating Particle Canvas on Black Background */}
-      <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-1" aria-hidden="true" />
+    <div
+      id="gallery-app"
+      className="relative min-h-screen bg-[#09090b] text-neutral-100 py-10 px-4 sm:px-6 lg:px-8 select-none"
+    >
+      {/* 3D WebGL2 Volumetric Raymarching Shader Background */}
+      {shaderEnabled && (
+        <div
+          id="shader-background-container"
+          className="fixed inset-0 pointer-events-none z-0 transition-opacity duration-700"
+          style={{ opacity: shaderIntensity === 'subtle' ? 0.65 : 0.95 }}
+        >
+          <ShaderDemo_ATC
+            className="w-full h-full"
+            resolutionScale={0.45}
+            speed={0.85}
+          />
+          {/* Vignette Overlay for maximum photo readability and eye comfort */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/85 backdrop-blur-[0.5px]" />
+        </div>
+      )}
+
+      {/* Full-Screen White Particle System: Formed Title + Roaming Background */}
+      <ParticleTitle />
 
       {/* Main Content Container */}
       <div className="relative z-10 max-w-5xl mx-auto">
-        <header id="gallery-header" className="text-center mb-8 flex flex-col items-center">
-          <ParticleTitle />
-          <p id="gallery-subtitle" className="mt-1 text-base sm:text-lg text-neutral-400 font-medium tracking-wide">
-            Michael's Photos
+        {/* Header section with subtitle and background controls */}
+        <header id="gallery-header" className="text-center mb-10 sm:mb-12 flex flex-col items-center">
+          <p
+            id="gallery-subtitle"
+            className="mt-3 text-xs sm:text-sm text-neutral-400 font-semibold tracking-widest uppercase"
+          >
+            Michael's Collection • Curated Gallery
           </p>
+
+          {/* Background Shader Toggle & Controls */}
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <button
+              onClick={() => setShaderEnabled(!shaderEnabled)}
+              className={`px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer flex items-center gap-1.5 ${
+                shaderEnabled
+                  ? 'bg-white/15 text-white border-white/30 shadow-[0_0_12px_rgba(255,255,255,0.15)]'
+                  : 'bg-black/40 text-neutral-400 border-white/10 hover:text-white'
+              }`}
+              title="Toggle the 3D WebGL Raymarching Shader Background"
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  shaderEnabled ? 'bg-cyan-400 animate-pulse' : 'bg-neutral-600'
+                }`}
+              />
+              Shader Background: {shaderEnabled ? 'Active' : 'Off'}
+            </button>
+
+            {shaderEnabled && (
+              <button
+                onClick={() =>
+                  setShaderIntensity(shaderIntensity === 'subtle' ? 'vivid' : 'subtle')
+                }
+                className="px-2.5 py-1 rounded-full text-xs text-neutral-300 hover:text-white bg-white/[0.08] hover:bg-white/[0.14] border border-white/10 transition-colors cursor-pointer"
+                title="Toggle between subtle atmospheric shader and vivid contrast"
+              >
+                Intensity: {shaderIntensity === 'subtle' ? 'Subtle' : 'Vivid'}
+              </button>
+            )}
+          </div>
         </header>
 
-        <main id="photo-grid" className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {photos.map((photo) => (
+        {/* 3x3 Photo Grid */}
+        <main
+          id="photo-grid"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-7"
+        >
+          {photos.map((photo, index) => (
             <article
               key={photo.id}
               id={`photo-card-${photo.id}`}
-              className="bg-[#141418] rounded-xl border border-white/10 shadow-lg hover:shadow-2xl hover:border-white/25 hover:-translate-y-1 transition-all duration-200 overflow-hidden flex flex-col group"
+              onClick={() => setSelectedPhotoIndex(index)}
+              className="bg-[#131317]/85 backdrop-blur-md rounded-2xl border border-white/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.6)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.9),0_0_24px_rgba(255,255,255,0.08)] hover:border-white/30 hover:-translate-y-1.5 transition-all duration-300 ease-out overflow-hidden flex flex-col group cursor-pointer"
             >
-              <div className="aspect-square w-full overflow-hidden bg-neutral-900">
+              {/* Photo Image with Hover Zoom */}
+              <div className="aspect-square w-full overflow-hidden bg-neutral-900 relative">
                 <img
                   id={`photo-img-${photo.id}`}
                   src={photo.imageUrl}
                   alt={photo.title}
                   loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
                   onError={(e) => {
                     const target = e.currentTarget;
                     if (!target.dataset.retry) {
@@ -257,19 +217,172 @@ export default function App(): React.JSX.Element {
                     }
                   }}
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-between p-4 pointer-events-none">
+                  <span className="text-xs font-semibold text-white bg-white/20 backdrop-blur-md px-3 py-1 rounded-full border border-white/30">
+                    Read Story & View
+                  </span>
+                </div>
               </div>
-              <div className="p-4 flex-1 flex flex-col justify-center bg-[#141418]">
-                <span className="text-xs uppercase tracking-wider text-neutral-400 font-semibold mb-1">
-                  {photo.category}
-                </span>
-                <h2 id={`photo-title-${photo.id}`} className="text-base font-semibold text-neutral-100 line-clamp-1">
-                  {photo.title}
-                </h2>
+
+              {/* Card Information & Snippet Preview */}
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-[#131317]/95">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] uppercase tracking-wider text-neutral-400 font-bold">
+                      {photo.category}
+                    </span>
+                    <span className="text-[10px] text-neutral-500 font-mono">
+                      #{photo.id}
+                    </span>
+                  </div>
+
+                  <h2
+                    id={`photo-title-${photo.id}`}
+                    className="text-base sm:text-lg font-bold text-neutral-100 group-hover:text-white transition-colors"
+                  >
+                    {photo.title}
+                  </h2>
+
+                  {/* 2-line Description Preview */}
+                  <p className="mt-1.5 text-xs text-neutral-400 line-clamp-2 leading-relaxed">
+                    {photo.description}
+                  </p>
+                </div>
+
+                <div className="mt-3 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-neutral-500 group-hover:text-neutral-300 transition-colors">
+                  <span>{photo.highlights.split('•')[0].trim()}</span>
+                  <span className="text-white/80 font-medium">Click to open →</span>
+                </div>
               </div>
             </article>
           ))}
         </main>
       </div>
+
+      {/* Interactive Photo Lightbox with Full Description */}
+      {activePhoto && (
+        <div
+          id="photo-lightbox-backdrop"
+          onClick={() => setSelectedPhotoIndex(null)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+        >
+          <div
+            id="photo-lightbox-modal"
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-3xl w-full bg-[#16161b] rounded-2xl border border-white/20 overflow-hidden shadow-2xl flex flex-col max-h-[92vh]"
+          >
+            {/* Modal Top Bar */}
+            <div className="px-5 py-3.5 bg-[#121216] border-b border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] uppercase tracking-wider font-semibold bg-white/10 text-neutral-200 border border-white/10">
+                  {activePhoto.category}
+                </span>
+                <span className="text-xs text-neutral-400 font-mono">
+                  {selectedPhotoIndex! + 1} of {photos.length}
+                </span>
+              </div>
+
+              {/* Close Button */}
+              <button
+                id="lightbox-close-btn"
+                onClick={() => setSelectedPhotoIndex(null)}
+                className="w-8 h-8 rounded-full bg-white/10 text-white hover:bg-white hover:text-black transition-all flex items-center justify-center font-bold text-lg cursor-pointer border border-white/20"
+                aria-label="Close dialog"
+                title="Close (Esc)"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Scrollable Modal Content */}
+            <div className="overflow-y-auto flex-1 flex flex-col">
+              {/* High-res Image Preview */}
+              <div className="relative w-full max-h-[52vh] flex items-center justify-center bg-black/95 overflow-hidden p-2 group">
+                <img
+                  id="lightbox-full-img"
+                  src={activePhoto.imageUrl}
+                  alt={activePhoto.title}
+                  className="w-full h-full object-contain max-h-[50vh] rounded-lg"
+                />
+
+                {/* Left / Right Quick Navigation Buttons on Image */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPhotoIndex((prev) => (prev !== null ? (prev - 1 + photos.length) % photos.length : 0));
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 hover:bg-white hover:text-black text-white transition-all flex items-center justify-center font-bold text-lg cursor-pointer border border-white/20 shadow-lg"
+                  title="Previous Photo (Left Arrow)"
+                  aria-label="Previous photo"
+                >
+                  ‹
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedPhotoIndex((prev) => (prev !== null ? (prev + 1) % photos.length : 0));
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 hover:bg-white hover:text-black text-white transition-all flex items-center justify-center font-bold text-lg cursor-pointer border border-white/20 shadow-lg"
+                  title="Next Photo (Right Arrow)"
+                  aria-label="Next photo"
+                >
+                  ›
+                </button>
+              </div>
+
+              {/* Rich Photo Description & Story */}
+              <div className="p-5 sm:p-6 bg-[#16161b] flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-2">
+                    <h3 className="text-xl sm:text-2xl font-bold text-white">
+                      {activePhoto.title}
+                    </h3>
+                    <span className="text-xs text-neutral-400 font-medium tracking-wide">
+                      {activePhoto.highlights}
+                    </span>
+                  </div>
+
+                  {/* Complete Description Text */}
+                  <div className="mt-3 p-4 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+                    <h4 className="text-xs uppercase tracking-widest text-neutral-400 font-bold mb-1.5">
+                      About This Photo
+                    </h4>
+                    <p className="text-sm sm:text-base text-neutral-200 leading-relaxed">
+                      {activePhoto.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom Bar with Actions */}
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setSelectedPhotoIndex((prev) => (prev !== null ? (prev - 1 + photos.length) % photos.length : 0))}
+                      className="px-3 py-1.5 text-xs font-semibold text-neutral-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg transition-colors cursor-pointer border border-white/10 flex items-center gap-1"
+                    >
+                      ← Previous
+                    </button>
+                    <button
+                      onClick={() => setSelectedPhotoIndex((prev) => (prev !== null ? (prev + 1) % photos.length : 0))}
+                      className="px-3 py-1.5 text-xs font-semibold text-neutral-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-lg transition-colors cursor-pointer border border-white/10 flex items-center gap-1"
+                    >
+                      Next →
+                    </button>
+                  </div>
+
+                  <button
+                    id="lightbox-done-btn"
+                    onClick={() => setSelectedPhotoIndex(null)}
+                    className="px-5 py-1.5 text-xs font-semibold uppercase tracking-wider text-neutral-200 hover:text-white bg-white/10 hover:bg-white/25 rounded-lg transition-colors cursor-pointer border border-white/20"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
